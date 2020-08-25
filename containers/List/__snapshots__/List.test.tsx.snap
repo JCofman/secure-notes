@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppHeader is rendered properly 1`] = `
+<div>
+  <ul />
+</div>
+`;
+
+exports[`List is rendered properly 1`] = `
+<div>
+  <ul />
+</div>
+`;
