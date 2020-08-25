@@ -1,0 +1,50 @@
+@import '~design-system/_sass/reusable-components/design-system-config';
+
+:root {
+	--bordercolor: #505560;
+}
+
+.container {
+	height: 100vh;
+	display: grid;
+	grid-template-rows: auto 1fr;
+	grid-template-columns: 3fr 2fr;
+	grid-template-areas:
+		'header header'
+		'notesList note'
+		'notesList note';
+}
+
+.container__header {
+	grid-area: header;
+}
+
+.container__notesList {
+	grid-area: notesList;
+	overflow-y: scroll;
+}
+
+.container__note {
+	grid-area: note;
+	overflow: auto;
+}
+
+.note__container {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	margin: 20px;
+	overflow: hidden;
+	height: calc(100% - 40px);
+}
+
+.note__container__textarea {
+	flex-grow: 1;
+	overflow-x: hidden;
+	color: white;
+	padding-left: 8px;
+}
+
+.border-bottom {
+	border-bottom: 1px solid var(--bordercolor);
+}

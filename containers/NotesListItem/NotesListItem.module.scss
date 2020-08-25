@@ -1,0 +1,14 @@
+.notesListItem__button {
+	display: block;
+	background-color: transparent;
+	width: 100%;
+}
+
+.notesListItem__button__selected {
+	background-color: #3c414e;
+}
+
+.notesListItem__button__container {
+	background: transparent;
+	border-color: var(--border-color);
+}

@@ -1,0 +1,17 @@
+.note__textarea {
+	flex-grow: 1;
+	border: none;
+	outline: none;
+	height: 100%;
+	width: 100%;
+	resize: none;
+	color: white;
+}
+
+.note__input {
+	all: inherit;
+	border: none;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
