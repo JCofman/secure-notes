@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppHeader is rendered properly 1`] = `
+<div>
+  <header
+    class="toolbar flex flex-items-center"
+  >
+    <button
+      aria-busy="false"
+      class="pm-button pm-button--primary ml1"
+      role="button"
+      type="button"
+    >
+      <svg
+        class="icon-16p"
+        focusable="false"
+        role="img"
+        viewBox="0 0 16 16"
+      >
+        <use
+          xlink:href="#shape-note-add"
+        />
+      </svg>
+       
+      New note
+    </button>
+  </header>
+</div>
+`;

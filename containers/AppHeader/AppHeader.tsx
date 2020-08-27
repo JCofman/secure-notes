@@ -13,7 +13,7 @@ const AppHeader = (props: AppHeaderProps) => {
 
     return (
         <Header className="toolbar flex flex-items-center">
-            <PrimaryButton className="ml1" icon="add" disabled={isEditing} onClick={onCreateNewNote}>
+            <PrimaryButton className="ml1" icon="note-add" disabled={isEditing} onClick={onCreateNewNote}>
                 {' '}
                 New note
             </PrimaryButton>
