@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-import Home from './';
+import Home from '../pages';
 
 test(`Home should render with no note message`, () => {
     render(<Home />);
