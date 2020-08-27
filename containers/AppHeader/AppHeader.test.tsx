@@ -22,5 +22,5 @@ test(`AppHeader onClick new note should be handled`, () => {
     const button = screen.getByRole('button', { name: /new note/i });
     userEvent.click(button);
 
-    expect(mockedHandleCreateNewNote).toHaveBeenCalled();
+    expect(mockedHandleCreateNewNote).toHaveBeenCalledTimes(1);
 });

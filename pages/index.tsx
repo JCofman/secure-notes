@@ -32,7 +32,6 @@ export const INIT = 'INIT';
 
 interface addNote {
     type: typeof ADD_NOTE;
-    payload: NoteType;
 }
 
 interface saveNote {
@@ -76,6 +75,7 @@ interface selectNote {
 }
 interface cancelNote {
     type: typeof CANCEL_NOTE;
+    payload: string;
 }
 
 type NotesActionType =
@@ -96,7 +96,7 @@ export interface NotesType {
 
 interface NotesState {
     notes: NotesType;
-    decryptedNotes: any;
+    decryptedCachedNotes: { [key: string]: string };
     encryptionQueue: string[];
     decryptionQueue: string[];
     selectedNoteId: string;
@@ -108,14 +108,13 @@ const notesReducer = (state: NotesState, action: NotesActionType) => {
         case ADD_NOTE:
             return {
                 ...state,
-                selectedNoteId: action.payload.id,
-                notes: { ...state.notes, [action.payload.id]: action.payload },
                 modus: EDIT_NOTE,
+                selectedNoteId: null,
             };
         case CANCEL_NOTE:
             return {
                 ...state,
-                modus: SELECT_NOTE,
+                modus: action.payload in state.notes ? SELECT_NOTE : INIT,
             };
         case SAVE_NOTE:
             return {
@@ -150,8 +149,8 @@ const notesReducer = (state: NotesState, action: NotesActionType) => {
         case DECRYPT_NOTE_SUCCESS:
             return {
                 ...state,
-                decryptedNotes: {
-                    ...state.decryptedNotes,
+                decryptedCachedNotes: {
+                    ...state.decryptedCachedNotes,
                     [action.payload.id]: action.payload.decryptedContent,
                 },
                 decryptionQueue: [...state.decryptionQueue.filter((id) => id !== action.payload.id)],
@@ -166,8 +165,8 @@ const notesReducer = (state: NotesState, action: NotesActionType) => {
                 ...state,
                 encryptionQueue: [...state.encryptionQueue.filter((id) => id !== action.payload.id)],
                 notes: { ...state.notes, ...action.payload.notes },
-                decryptedNotes: {
-                    ...state.decryptedNotes,
+                decryptedCachedNotes: {
+                    ...state.decryptedCachedNotes,
                     [action.payload.id]: action.payload.notes[action.payload.id].content,
                 },
                 selectedNoteId: action.payload.id,
@@ -177,20 +176,21 @@ const notesReducer = (state: NotesState, action: NotesActionType) => {
             return state;
     }
 };
+
 export const Home = () => {
     const [savedNotes, setSavedNotes] = useLocalStorage('notes', {});
 
     const initialState = {
-        modus: 'INIT',
+        modus: INIT,
         notes: savedNotes,
-        decryptedNotes: {},
+        decryptedCachedNotes: {},
         decryptionQueue: [],
         encryptionQueue: [],
         selectedNoteId: null,
     };
 
     const [
-        { notes, decryptedNotes, decryptionQueue, encryptionQueue, selectedNoteId, modus },
+        { notes, decryptedCachedNotes, decryptionQueue, encryptionQueue, selectedNoteId, modus },
         dispatch,
     ] = React.useReducer(notesReducer, initialState);
 
@@ -202,14 +202,10 @@ export const Home = () => {
         dispatch({ type: EDIT_NOTE, payload: true });
     };
 
-    const handleCancel = () => {
-        dispatch({ type: CANCEL_NOTE });
+    const handleCancel = (id: string) => {
+        dispatch({ type: CANCEL_NOTE, payload: id });
     };
 
-    /**
-     * saves unencrypted notes content as an encrypted text.
-     * @param unEncryptedNote
-     */
     const handleNoteSave = async (unEncryptedNote: NoteType) => {
         const { id, content } = unEncryptedNote;
 
@@ -234,8 +230,11 @@ export const Home = () => {
     };
 
     const handleNewNote = () => {
-        const newNote = createNewNote();
-        dispatch({ type: ADD_NOTE, payload: newNote });
+        dispatch({ type: ADD_NOTE });
+    };
+
+    const isNotDecrypted = (id: string) => {
+        return !(id in decryptedCachedNotes) && !decryptionQueue.includes(id);
     };
 
     const handleSelectNote = async (id) => {
@@ -245,7 +244,7 @@ export const Home = () => {
 
         dispatch({ type: SELECT_NOTE, payload: id });
 
-        if (!(id in decryptedNotes) && !decryptionQueue[id]) {
+        if (isNotDecrypted(id)) {
             dispatch({ type: DECRYPT_NOTE_REQUEST, payload: id });
 
             const decryptedContent = await decrypt(notes[id].content);
@@ -263,7 +262,7 @@ export const Home = () => {
                     <NotesRendered
                         key={selectedNoteId}
                         note={notes[selectedNoteId]}
-                        decryptedContent={decryptedNotes[selectedNoteId]}
+                        decryptedContent={decryptedCachedNotes[selectedNoteId]}
                         isDecrypting={decryptionQueue.includes(selectedNoteId)}
                         onEdit={handleEdit}
                     />
@@ -272,8 +271,8 @@ export const Home = () => {
                 return (
                     <NotesEditor
                         key={selectedNoteId}
-                        note={notes[selectedNoteId]}
-                        decryptedContent={decryptedNotes[selectedNoteId]}
+                        note={notes[selectedNoteId] || createNewNote()}
+                        decryptedContent={decryptedCachedNotes[selectedNoteId]}
                         isEncrypting={encryptionQueue.includes(selectedNoteId)}
                         onSave={handleNoteSave}
                         onCancel={handleCancel}
@@ -287,7 +286,7 @@ export const Home = () => {
         <div>
             <Icons></Icons>
             <Head>
-                <title>Proton Notes</title>
+                <title>Secure Notes</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <div className="container">

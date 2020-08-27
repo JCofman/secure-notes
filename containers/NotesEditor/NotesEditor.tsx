@@ -8,26 +8,47 @@ import { NoteType } from '../../helpers/utils';
 
 import styles from './NotesEditor.module.scss';
 
-interface NoteRenderedProps {
+interface NotesEditorProps {
     note: NoteType;
     decryptedContent: string;
     isEncrypting: boolean;
     onSave: ({ id, title, content }: { id: string; title: string; content: string }) => void;
     onDelete: () => void;
-    onCancel: () => void;
+    onCancel: (id: string) => void;
 }
 
-const NoteRendered = ({ note, decryptedContent, isEncrypting, onSave, onDelete, onCancel }: NoteRenderedProps) => {
+const NotesEditor = ({ note, decryptedContent, isEncrypting, onSave, onDelete, onCancel }: NotesEditorProps) => {
     const [title, handleTitleChange] = useTargetValue(note.title);
     const [content, handleContentChange] = useTargetValue(decryptedContent);
 
     return (
         <Note
-            titleArea={<input className={styles.note__input} autoFocus value={title} onChange={handleTitleChange} />}
-            contentArea={<textarea className={styles.note__textarea} value={content} onChange={handleContentChange} />}
+            titleArea={
+                <input
+                    name="input-content"
+                    className={styles.note__input}
+                    autoFocus
+                    value={title}
+                    onChange={handleTitleChange}
+                />
+            }
+            contentArea={
+                <textarea
+                    data-cy="note-content"
+                    name="note-content"
+                    className={styles.note__textarea}
+                    value={content}
+                    onChange={handleContentChange}
+                />
+            }
             controlsArea={
                 <div className="flex flex-spacebetween">
-                    <WarningButton className="flex-self-start" icon="close" disabled={isEncrypting} onClick={onCancel}>
+                    <WarningButton
+                        className="flex-self-start"
+                        icon="close"
+                        disabled={isEncrypting}
+                        onClick={() => onCancel(note.id)}
+                    >
                         {' '}
                         Cancel
                     </WarningButton>
@@ -59,4 +80,4 @@ const NoteRendered = ({ note, decryptedContent, isEncrypting, onSave, onDelete, 
     );
 };
 
-export default NoteRendered;
+export default NotesEditor;

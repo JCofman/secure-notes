@@ -1,5 +1,9 @@
 @import '~design-system/_sass/reusable-components/design-system-config';
 
+// overwrite some base styles since next.js currently does not allow to import scss files from node_modules
+// so the <ThemeInjector> cannot be added to this project
+// inside .ts and .js files
+
 :root {
 	--bordercolor: #505560;
 }
@@ -21,7 +25,7 @@
 
 .container__notesList {
 	grid-area: notesList;
-	overflow-y: scroll;
+	overflow: hidden;
 }
 
 .container__note {
@@ -40,11 +44,14 @@
 
 .note__container__textarea {
 	flex-grow: 1;
-	overflow-x: hidden;
 	color: white;
 	padding-left: 8px;
 }
 
 .border-bottom {
 	border-bottom: 1px solid var(--bordercolor);
+}
+
+.item-container-row {
+	background-color: transparent;
 }
