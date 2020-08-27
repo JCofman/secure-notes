@@ -8,8 +8,11 @@ import React from 'react';
 export const useLocalStorage = <T,>(key: string, initialValue: T): [T, (newValue: T) => void] => {
     const [storedValue, setStoredValue] = React.useState(() => {
         try {
-            const item = window.localStorage.getItem(key);
-            return item ? JSON.parse(item) : initialValue;
+            if (process.browser) {
+                const item = window.localStorage.getItem(key);
+                return item ? JSON.parse(item) : initialValue;
+            }
+            return initialValue;
         } catch (error) {
             // eslint-disable-next-line no-console
             console.log(error);
