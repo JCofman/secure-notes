@@ -2,6 +2,8 @@
 
 > [Secure-Notes](https://secure-notes.vercel.app/) example of an notes taking app
 
+![lighthouse-score](lightouse-score.png)
+
 ## Install and run
 
 ```sh
